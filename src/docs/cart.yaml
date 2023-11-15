@@ -1,0 +1,167 @@
+paths:
+  /api/carts:
+    get:
+      summary: Obtener todos los carritos
+      description: Retorna una lista de todos los carritos de compra.
+      tags: 
+        - cart
+      responses:
+        '200':
+          description: Lista de carritos exitosamente obtenida.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cart'
+
+    post:
+      summary: Crear un nuevo carrito
+      description: Crea un nuevo carrito de compra.
+      tags: 
+        - cart
+      responses:
+        '201':
+          description: Carrito creado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+
+  /api/carts/user:
+    get:
+      summary: Obtener carrito del usuario
+      description: Retorna el carrito de compra del usuario autenticado.
+      tags: 
+        - cart
+      responses:
+        '200':
+          description: Carrito de usuario exitosamente obtenido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '401':
+          description: Usuario no autenticado.
+
+  /api/carts/{cid}:
+    get:
+      summary: Obtener un carrito por ID
+      description: Retorna un carrito de compra específico por su ID.
+      tags: 
+        - cart
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito a buscar.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Carrito exitosamente encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '401':
+          description: Usuario no autenticado.
+
+    delete:
+      summary: Eliminar un carrito por ID
+      description: Elimina un carrito de compra específico por su ID.
+      tags: 
+        - cart
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito a eliminar.
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Carrito eliminado exitosamente.
+        '401':
+          description: Usuario no autenticado.
+
+  /api/carts/{cid}/product/{pid}:
+    post:
+      summary: Agregar producto al carrito
+      description: Agrega un producto al carrito de compra específico.
+      tags: 
+        - cart
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito al que se agregará el producto.
+          schema:
+            type: integer
+        - in: path
+          name: pid
+          required: true
+          description: ID del producto a agregar al carrito.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Producto agregado exitosamente al carrito.
+        '401':
+          description: Usuario no autenticado.
+
+    delete:
+      summary: Eliminar producto del carrito
+      description: Elimina un producto del carrito de compra específico.
+      tags: 
+        - cart
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito del que se eliminará el producto.
+          schema:
+            type: integer
+        - in: path
+          name: pid
+          required: true
+          description: ID del producto a eliminar del carrito.
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Producto eliminado exitosamente del carrito.
+        '401':
+          description: Usuario no autenticado.
+
+  /api/carts/user/purchase:
+    post:
+      summary: Realizar compra de carrito de usuario
+      description: Realiza la compra de un carrito de compra de un usuario autenticado y crea un ticket de compra.
+      tags: 
+        - cart
+      responses:
+        '200':
+          description: Compra realizada exitosamente y se ha creado un ticket de compra.
+        '401':
+          description: Usuario no autenticado.
+        '404':
+          description: Carrito de usuario no encontrado o vacío.
+
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+        products:
+          type: array
+          description: Contiene el id del producto que esta dentro del carrito.
+        totalPrice:
+          type: number
+          description: Es la suma total de todos los productos dentro del carrito  
+      example:
+        _id: ObjectId("652acba407d8295adeab421d")
+        products: []
+        totalPrice: 0
